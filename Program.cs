@@ -2,10 +2,12 @@ using Vite.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddViteServices();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddViteServices();
 
 var app = builder.Build();
 
