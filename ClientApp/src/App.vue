@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import SubidaFichero from './components/SubidaFichero.vue'
 </script>
 
 <template>
   <h1>Bienvenido</h1>
-  <HelloWorld msg="Vite + Vue" />
+  <SubidaFichero />
 </template>
 
 <style scoped>
