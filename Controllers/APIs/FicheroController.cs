@@ -30,6 +30,24 @@ namespace SubirFicheros_ClienteServidor.Controllers.APIs
             return "value";
         }
 
+        [HttpGet]
+        [Route("DescargarImagen/{imagen}")]
+        public IActionResult DescargarImagen(string imagen)
+        {
+            var pathrutaficheros = _configuracion.GetValue<string>("RutaFicheros");
+
+            var path = Path.Combine(pathrutaficheros, imagen);
+            if (System.IO.File.Exists(path))
+            {
+                var bytes = System.IO.File.ReadAllBytes(path);
+                return File(bytes, "application/octet-stream", imagen);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         public string ObtenerExtensionFichero(string nombrefichero)
         {
             if (string.IsNullOrEmpty(nombrefichero))
@@ -42,7 +60,7 @@ namespace SubirFicheros_ClienteServidor.Controllers.APIs
 
         // POST api/<FicheroController>
         [HttpPost]
-        public void Post(ClaseUploadFichero parametros)
+        public IActionResult Post(ClaseUploadFichero parametros)
         {
             if (parametros.Fichero != null)
             {
@@ -60,7 +78,11 @@ namespace SubirFicheros_ClienteServidor.Controllers.APIs
                 {
                     parametros.Fichero.CopyTo(stream);
                 }
+
+                return Ok("/api/fichero/DescargarImagen/" + parametros.Nombre + ObtenerExtensionFichero(parametros.Fichero.FileName));
             }
+
+            return NoContent();
         }
 
         // PUT api/<FicheroController>/5

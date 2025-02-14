@@ -20,9 +20,27 @@ const onSubmit = async (e: Event) => {
     url: endpoint,
     headers: { 'Content-Type': 'multipart/form-data'},
     data: formData
+  }).then((response) => {
+    console.log("Respuesta", response)
+    document.getElementById("alert")!.classList.remove("d-none");
+    document.getElementById("alert")!.classList.add("d-block");
+    document.getElementById("alert")!.querySelector("p")!.innerHTML = "Fichero subido correctamente: <a href='" + response.data + "'>Descargar</a>";
+    document.getElementById("img")!.setAttribute("src", URL.createObjectURL(fichero.files[0]));
+
+    // let alert = document.getElementById('alert')
+    //                 alert.children[0].innerText = `Upload success!\nName: ${result.name}\nImage: ${result.image}`
+    //                 alert.children[1].src = `/uploads/${result.image}`
+    //                 alert.classList.remove('d-none')
+    //                 form.reset()
+
+  }).catch((error) => {
+    console.log("Error", error)
+    document.getElementById("alert")!.classList.remove("d-none");
+    document.getElementById("alert")!.classList.add("d-block");
+    document.getElementById("alert")!.querySelector("p")!.innerText = "Error al subir el fichero";
   });
 
-  console.log("Respuesta", response)
+
     
 }
 
@@ -41,6 +59,10 @@ const count = ref(0)
       <label for="file" class="form-label">Subir fichero</label>
       <input type="file"class="form-control" id="fichero" required>
     </div>
+    <div id="alert" class="alert alert-success mt-3 d-none">
+            <p></p>
+            <img id="img" width="200px" />
+        </div>
     <button type="submit" class="btn btn-primary">Enviar</button>
   </form>
 </template>
