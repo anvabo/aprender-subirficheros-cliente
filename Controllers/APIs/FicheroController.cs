@@ -85,6 +85,37 @@ namespace SubirFicheros_ClienteServidor.Controllers.APIs
             return NoContent();
         }
 
+        // POST api/<FicheroController>
+        [HttpPost]
+        [Route("FicheroMultiple")]
+        public IActionResult FicheroMultiple(ClaseUploadFicheros parametros)
+        {
+            if (parametros.Ficheros != null && parametros.Ficheros.Length > 0)
+            {
+                for(int i = 0; i < parametros.Ficheros.Length; i++)
+                {
+                    var pathrutaficheros = _configuracion.GetValue<string>("RutaFicheros");
+
+                    var path = Path.Combine(pathrutaficheros, parametros.Nombre + "_" + (i+1) + ObtenerExtensionFichero(parametros.Ficheros[i].FileName));
+
+                    // Borramos el fichero si existe
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.IO.File.Delete(path);
+                    }
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        parametros.Ficheros[i].CopyTo(stream);
+                    }
+
+                    return Ok();
+                }
+            }
+
+            return NoContent();
+        }
+
         // PUT api/<FicheroController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
