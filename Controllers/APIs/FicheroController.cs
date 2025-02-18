@@ -17,35 +17,55 @@ namespace SubirFicheros_ClienteServidor.Controllers.APIs
         }
 
         // GET: api/<FicheroController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
         // GET api/<FicheroController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
+
+        //[HttpGet]
+        //[Route("DescargarImagen/{imagen}")]
+        //public IActionResult DescargarImagen(string imagen)
+        //{
+        //    var pathrutaficheros = _configuracion.GetValue<string>("RutaFicheros");
+
+        //    var path = Path.Combine(pathrutaficheros, imagen);
+        //    if (System.IO.File.Exists(path))
+        //    {
+        //        var bytes = System.IO.File.ReadAllBytes(path);
+        //        return File(bytes, "application/octet-stream", imagen);
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
 
         [HttpGet]
-        [Route("DescargarImagen/{imagen}")]
-        public IActionResult DescargarImagen(string imagen)
+        [Route("DescargarDocumento")]
+        public IActionResult DescargarDocumento()
         {
             var pathrutaficheros = _configuracion.GetValue<string>("RutaFicheros");
+            string[] pdfFiles = Directory.GetFiles(pathrutaficheros, "*.pdf");
 
-            var path = Path.Combine(pathrutaficheros, imagen);
-            if (System.IO.File.Exists(path))
+            if (pdfFiles.Length > 0)
             {
-                var bytes = System.IO.File.ReadAllBytes(path);
-                return File(bytes, "application/octet-stream", imagen);
+                string firstPdfFile = pdfFiles[0];
+
+                if (System.IO.File.Exists(firstPdfFile))
+                {
+                    var bytes = System.IO.File.ReadAllBytes(firstPdfFile);
+                    return File(bytes, "application/octet-stream", "prueba.pdf");
+                }                
             }
-            else
-            {
-                return NotFound();
-            }
+            return NotFound();
         }
 
         public string ObtenerExtensionFichero(string nombrefichero)

@@ -5,6 +5,37 @@ import { ref } from 'vue'
 const nombre = ref('')
 const files = ref<File[]>([]);
 
+const descargarFichero = async () => {
+  const endpoint = "https://localhost:44306/api/Fichero/DescargarDocumento";
+
+  await axios({
+    method: 'get', 
+    url: endpoint
+  })
+    .then(response => {
+            // 1. Recuperamos el nombre
+            const contentdisposition = response.headers['content-disposition'];
+            const busquedanombrefichero = contentdisposition.match(/filename=(.+);/);
+
+            if (busquedanombrefichero) {
+                const nombrefichero = busquedanombrefichero[1]
+
+                // 2. Preparamos un enlace que apunta al fichero. Hacemos clic para descargarlo
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', nombrefichero);
+                document.body.appendChild(link);
+                link.click();
+            }
+
+        })
+        .catch(error => {
+            console.error(error)
+        })
+}
+
+
 const onSubmit = async (e: Event) => {
   e.preventDefault()
   console.log('submit')
@@ -79,6 +110,8 @@ const onSubmit = async (e: Event) => {
         </div>
     <button type="submit" class="btn btn-primary">Enviar</button>
   </form>
+
+  <button type="button" class="btn btn-primary mt-5" @click="descargarFichero">Descargar</button>
 </template>
 
 <style scoped>
